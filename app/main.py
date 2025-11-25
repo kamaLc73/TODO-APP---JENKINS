@@ -46,7 +46,7 @@ def root():
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "jenkins_test": True}
 
 @app.get("/todos", response_model=List[TodoRead])
 def list_todos(db: Session = Depends(get_db)):
