@@ -1,44 +1,30 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Install dependencies') {
+        stage('Test Python') {
             steps {
-                bat 'py -m pip install --upgrade pip'
-                bat 'py -m pip install -r requirements.txt'
+                bat "\"C:\\Users\\kamal\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" --version"
+                bat "\"C:\\Users\\kamal\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\pip.exe\" --version"
             }
         }
-        
-        stage('Test') {
+
+        stage('Install') {
             steps {
-                bat 'py -m pytest test_app.py --maxfail=1 --disable-warnings'
+                bat "\"C:\\Users\\kamal\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\pip.exe\" install pytest fastapi sqlalchemy httpx"
             }
         }
-        
-        stage('Build Docker image') {
+
+        stage('Test App') {
             steps {
-                bat 'docker build -t fastapi-todo .' 
-            }
-        }
-        
-        stage('Run Docker container') {
-            steps {
-                bat 'docker stop fastapi-todo 2>nul || exit 0'
-                bat 'docker rm fastapi-todo 2>nul || exit 0'
-                bat 'docker run -d -p 8000:8000 --name fastapi-todo fastapi-todo'
+                bat "\"C:\\Users\\kamal\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" -m pytest test_app.py -v"
             }
         }
     }
-    
+
     post {
         success {
-            echo 'Build reussi! App disponible sur http://localhost:8000'
-        }
-        failure {
-            echo 'Build echoue!'
-        }
-        always {
-            bat 'docker rm -f fastapi-todo 2>nul || exit 0'
+            echo 'BUILD REUSSI!'
         }
     }
 }
